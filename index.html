@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CHUYỂN FILE HTML SANG FILE H5P - Thầy Lê Nguyễn Cường</title>
+<style>
+:root{
+  --bg:#edf7f1;
+  --card:#ffffff;
+  --ink:#24333a;
+  --muted:#667a73;
+  --blue:#145a8d;
+  --line:#b7d9c7;
+  --accent:#167a5b;
+  --accent2:#1b6f95;
+  --gold:#e6b84a;
+  --gold-soft:#fff3c9;
+  --good:#166534;
+  --bad:#b91c1c;
+  --warn:#9a6700;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,"Segoe UI",Arial,sans-serif;
+  background:linear-gradient(180deg,#e7f4ec 0%,#f3f9f5 48%,#eef6f1 100%);
+  color:var(--ink);
+}
+.hero{
+  min-height:190px;
+  padding:22px 28px 30px;
+  background:linear-gradient(120deg,#0f5a45 0%,#177255 48%,#1b7a69 72%,#17658c 100%);
+  color:#fff;
+  border-radius:0 0 34px 34px;
+  box-shadow:0 12px 32px rgba(20,90,73,.20);
+  position:relative;
+  border-bottom:4px solid rgba(230,184,74,.75);
+}
+.teacher{
+  position:absolute;
+  right:28px;
+  top:18px;
+  font-weight:800;
+  color:#fff0b5;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,240,181,.55);
+  padding:10px 16px;
+  border-radius:999px;
+  backdrop-filter:blur(8px);
+}
+.hero h1{
+  text-align:center;
+  margin:18px auto 24px;
+  font-size:clamp(29px,4vw,46px);
+  line-height:1.12;
+  letter-spacing:.3px;
+  max-width:980px;
+  color:#fff0b5;
+  text-shadow:0 2px 0 rgba(0,0,0,.08);
+}
+.badges{display:flex;justify-content:center;flex-wrap:wrap;gap:12px}
+.badge{
+  padding:10px 18px;
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:999px;
+  background:rgba(255,255,255,.10);
+  font-weight:800;
+  color:#f8fbff;
+}
+.wrap{max-width:1480px;margin:28px auto;padding:0 18px 34px}
+.panel{
+  background:var(--card);
+  border:1px solid #cfe2d7;
+  border-radius:28px;
+  padding:30px;
+  box-shadow:0 16px 40px rgba(25,89,66,.10);
+}
+.tabs{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
+.tab{
+  border:1px solid #c9ddd2;
+  border-radius:14px;
+  padding:13px 18px;
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+  background:#edf6f1;
+  color:#355247;
+}
+.tab:hover{background:#e4f1ea}
+.tab.active{
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  color:#fff;
+  border-color:transparent;
+  box-shadow:0 8px 18px rgba(20,96,80,.20);
+}
+.mode{display:none}.mode.active{display:block}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.drop{
+  border:3px dashed var(--line);
+  border-radius:24px;
+  padding:26px;
+  min-height:225px;
+  text-align:center;
+  background:linear-gradient(180deg,#fbfefc,#f5fbf7);
+}
+.drop h2{color:var(--blue);font-size:26px;margin:8px 0 12px}
+.drop p{font-size:18px;color:var(--muted);line-height:1.5;max-width:650px;margin:0 auto 18px}
+.filebox{display:grid;gap:9px;max-width:560px;margin:15px auto;text-align:left}
+.filebox label{font-weight:800;color:#31584b}
+.filebox input[type=file]{width:100%;padding:11px;background:#fff;border:1px solid #bfd4c7;border-radius:12px}
+.filebox input[type=file]:focus{outline:3px solid rgba(20,90,141,.10);border-color:#4f8aad}
+.hint{font-size:14px!important;color:#6b7d76!important;margin-top:9px!important}
+.title-row{display:grid;grid-template-columns:1fr 230px;gap:18px;align-items:end;margin-top:24px}
+.field label{display:block;font-size:20px;font-weight:900;margin-bottom:9px;color:#173d34}
+.field input{width:100%;border:1px solid #bcd6c7;border-radius:15px;padding:17px 18px;font-size:20px;outline:none;background:#fcfffd}
+.field input:focus{border-color:#2b769d;box-shadow:0 0 0 4px rgba(43,118,157,.11)}
+.btn{
+  height:62px;
+  border:0;
+  border-radius:15px;
+  background:linear-gradient(90deg,#167a5b 0%,#1f7b69 48%,#1b6f95 100%);
+  color:#fff;
+  font-size:20px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 10px 24px rgba(24,105,83,.18);
+}
+.btn:disabled{cursor:not-allowed;background:#a6c9b6;box-shadow:none;opacity:.76;color:#f5faf7}
+.btn:hover:not(:disabled){filter:brightness(1.045);transform:translateY(-1px)}
+.status{margin-top:24px;padding:18px 20px;border-radius:15px;background:#edf7f1;border:1px solid #b9ddca;color:#176044;font-size:17px;white-space:pre-wrap}
+.status.good{background:#ecfdf5;border-color:#a7f3d0;color:#166534}
+.status.bad{background:#fef2f2;border-color:#fecaca;color:#991b1b}
+.status.warn{background:#fff8dc;border-color:#efd68a;color:#805b00}
+.preview{margin-top:16px;display:grid;gap:10px}
+.preview-item{padding:12px 14px;border-radius:12px;background:#f7fbf8;border:1px solid #d6e6dc}
+.preview-item b{color:var(--blue)}
+.footer-note{margin-top:22px;color:#667a73;font-size:15px;line-height:1.6}
+.footer-note strong{color:#234b3d}
+.mini{font-size:13px;color:#667a73}.hidden{display:none!important}
+@media(max-width:850px){.teacher{position:static;width:max-content;max-width:100%;margin-left:auto}.hero h1{margin-top:16px}.grid{grid-template-columns:1fr}.title-row{grid-template-columns:1fr}.panel{padding:18px}.drop h2{font-size:22px}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="teacher">Thầy Lê Nguyễn Cường</div>
+  <h1>CHUYỂN FILE HTML SANG FILE H5P</h1>
+  <div class="badges">
+    <span class="badge">📄 HTML + Ảnh/Tài nguyên</span>
+    <span class="badge">🎬 Video MP4 + File câu hỏi</span>
+    <span class="badge">🇻🇳 Hỗ trợ tiếng Việt</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="panel">
+    <div class="tabs">
+      <button class="tab active" data-mode="html">1) HTML + ẢNH / TÀI NGUYÊN</button>
+      <button class="tab" data-mode="video">2) VIDEO + FILE CÂU HỎI</button>
+    </div>
+
+    <div id="mode-html" class="mode active">
+      <div class="grid">
+        <div class="drop">
+          <h2>1. Chọn file HTML</h2>
+          <p>Chọn <b>index.html</b> hoặc <b>index.htm</b>. Mã HTML/CSS/JavaScript được giữ nguyên và đưa vào gói H5P.</p>
+          <div class="filebox">
+            <label>File HTML</label>
+            <input id="htmlFile" type="file" accept=".html,.htm,text/html">
+          </div>
+        </div>
+        <div class="drop">
+          <h2>2. Ảnh / tài nguyên đi kèm</h2>
+          <p>Chọn ảnh, video, audio hoặc tài nguyên cục bộ mà HTML đang gọi. Có thể chọn nhiều file.</p>
+          <div class="filebox">
+            <label>Tài nguyên</label>
+            <input id="htmlAssets" type="file" multiple>
+          </div>
+          <p class="hint">Nếu HTML chỉ có một ảnh nhưng tên ảnh tải lên khác tên trong HTML, ứng dụng vẫn tự ghép khi chỉ có 1 tài nguyên cục bộ.</p>
+        </div>
+      </div>
+      <div id="htmlPreview" class="preview"></div>
+    </div>
+
+    <div id="mode-video" class="mode">
+      <div class="grid">
+        <div class="drop">
+          <h2>1. Nạp Video</h2>
+          <p>Chọn video định dạng <b>.mp4</b>. Video sẽ được đóng gói trực tiếp trong H5P.</p>
+          <div class="filebox">
+            <label>Video MP4</label>
+            <input id="videoFile" type="file" accept="video/mp4,.mp4">
+          </div>
+          <div id="videoInfo" class="mini"></div>
+        </div>
+        <div class="drop">
+          <h2>2. Nạp file câu hỏi</h2>
+          <p>Hỗ trợ <b>.docx, .txt, .md</b>. File cần có mốc “Tại giây … hiện câu hỏi …”, các lựa chọn A–D và dòng “Đáp án: …”.</p>
+          <div class="filebox">
+            <label>File câu hỏi</label>
+            <input id="questionFile" type="file" accept=".docx,.txt,.md,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+          </div>
+          <p class="hint">Trả lời đúng → video phát tiếp. Trả lời sai → bắt buộc chọn lại cho đúng.</p>
+        </div>
+      </div>
+      <div id="questionPreview" class="preview"></div>
+    </div>
+
+    <div class="title-row">
+      <div class="field">
+        <label for="lessonTitle">Tiêu đề bài học</label>
+        <input id="lessonTitle" value="BÀI HỌC TƯƠNG TÁC" autocomplete="off">
+      </div>
+      <button id="createBtn" class="btn" disabled>TẠO FILE H5P</button>
+    </div>
+
+    <div id="status" class="status">Chưa tải file...</div>
+    <div class="footer-note">
+      <strong>Cách dùng:</strong> chọn đúng chế độ → nạp file → bấm <b>TẠO FILE H5P</b>. File <b>.h5p</b> sẽ tự tải về máy. Gói tạo ra dùng một H5P library wrapper, lưu media trong <code>content/</code> và đổi đường dẫn tài nguyên sang URL runtime bằng <code>H5P.getPath()</code>.
+    </div>
+  </section>
+</main>
+
+<script>
+'use strict';
+
+// =========================
+// CẤU HÌNH
+// =========================
+const LIB_MACHINE = 'H5P.LNCWebMedia';
+const LIB_FOLDER = 'H5P.LNCWebMedia-1.0';
+const LIB_PROP = 'LNCWebMedia';
+let currentMode = 'html';
+let parsedQuestions = null;
+let currentVideoDuration = null;
+
+const $ = (id) => document.getElementById(id);
+const statusEl = $('status');
+const createBtn = $('createBtn');
+
+function setStatus(msg, type='') {
+  statusEl.className = 'status' + (type ? ' ' + type : '');
+  statusEl.textContent = msg;
+}
+function formatBytes(n){
+  if(!Number.isFinite(n)) return '';
+  const u=['B','KB','MB','GB']; let i=0, v=n;
+  while(v>=1024 && i<u.length-1){v/=1024;i++;}
+  return v.toFixed(i?1:0)+' '+u[i];
+}
+function formatTime(sec){
+  if(!Number.isFinite(sec)) return '';
+  const m=Math.floor(sec/60), s=Math.floor(sec%60); return `${m}:${String(s).padStart(2,'0')}`;
+}
+function safeFilename(title){
+  let s=String(title||'BAI_HOC_TUONG_TAC').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D');
+  s=s.replace(/[^A-Za-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,80);
+  return (s||'BAI_HOC_TUONG_TAC')+'.h5p';
+}
+function extOf(name){const m=String(name).toLowerCase().match(/(\.[a-z0-9]+)$/);return m?m[1]:'';}
+function mimeOf(file){
+  if(file.type) return file.type;
+  const e=extOf(file.name); return ({'.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.gif':'image/gif','.webp':'image/webp','.svg':'image/svg+xml','.mp4':'video/mp4','.mp3':'audio/mpeg','.wav':'audio/wav','.ogg':'audio/ogg','.css':'text/css','.js':'application/javascript','.json':'application/json','.pdf':'application/pdf','.woff':'font/woff','.woff2':'font/woff2','.ttf':'font/ttf'})[e]||'application/octet-stream';
+}
+
+// =========================
+// TABS / UI
+// =========================
+document.querySelectorAll('.tab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    currentMode=btn.dataset.mode;
+    document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===btn));
+    document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'));
+    $('mode-'+currentMode).classList.add('active');
+    refreshReadyState();
+  });
+});
+['htmlFile','htmlAssets','videoFile','questionFile'].forEach(id=>$(id).addEventListener('change', refreshReadyState));
+$('questionFile').addEventListener('change', parseQuestionSelection);
+$('videoFile').addEventListener('change', inspectVideo);
+$('htmlFile').addEventListener('change', inspectHtml);
+$('htmlAssets').addEventListener('change', inspectHtml);
+createBtn.addEventListener('click', createPackage);
+
+function hasInvalidCue(){
+  return !!(parsedQuestions && Number.isFinite(currentVideoDuration) && parsedQuestions.some(q=>q.time>currentVideoDuration+1));
+}
+function refreshReadyState(updateStatus=true){
+  if(currentMode==='html'){
+    const ok=!!$('htmlFile').files[0];
+    createBtn.disabled=!ok;
+    if(updateStatus){
+      if(ok) setStatus('Đã nhận file HTML. Có thể tạo H5P sau khi kiểm tra tài nguyên.', 'good');
+      else setStatus('Chưa tải file HTML...');
+    }
+  } else {
+    const cueBad=hasInvalidCue();
+    const ok=!!$('videoFile').files[0] && !!$('questionFile').files[0] && parsedQuestions && parsedQuestions.length>0 && !cueBad;
+    createBtn.disabled=!ok;
+    if(updateStatus){
+      if(cueBad){
+        const bad=parsedQuestions.filter(q=>q.time>currentVideoDuration+1);
+        setStatus('Có mốc câu hỏi vượt quá thời lượng video: '+bad.map(q=>`Câu ${q.number} @ ${q.time}s`).join(', '),'bad');
+      } else if(ok) setStatus(`Đã nhận video và ${parsedQuestions.length} câu hỏi. Sẵn sàng tạo H5P.`, 'good');
+      else if($('videoFile').files[0] || $('questionFile').files[0]) setStatus('Cần đủ video MP4 và file câu hỏi hợp lệ.', 'warn');
+      else setStatus('Chưa tải video và file câu hỏi...');
+    }
+  }
+}
+
+async function inspectHtml(){
+  const file=$('htmlFile').files[0];
+  const assets=[...$('htmlAssets').files];
+  const box=$('htmlPreview'); box.innerHTML='';
+  if(!file) return refreshReadyState();
+  try{
+    const html=await file.text();
+    const refs=extractLocalRefs(html);
+    const d=document.createElement('div');d.className='preview-item';
+    d.innerHTML=`<b>HTML:</b> ${escapeHtml(file.name)} · ${formatBytes(file.size)}<br><b>Tài nguyên cục bộ phát hiện:</b> ${refs.length?refs.map(escapeHtml).join(', '):'Không có'}<br><b>Đã chọn:</b> ${assets.length?assets.map(f=>escapeHtml(f.name)).join(', '):'Chưa chọn tài nguyên'}`;
+    box.appendChild(d);
+  }catch(e){setStatus('Không đọc được HTML: '+e.message,'bad');}
+  refreshReadyState();
+}
+
+async function inspectVideo(){
+  currentVideoDuration=null;
+  const f=$('videoFile').files[0]; $('videoInfo').textContent='';
+  if(!f) return refreshReadyState();
+  if(extOf(f.name)!=='.mp4' && f.type!=='video/mp4'){
+    setStatus('Video phải là định dạng .mp4','bad'); return refreshReadyState();
+  }
+  try{
+    currentVideoDuration=await getVideoDuration(f);
+    $('videoInfo').textContent=`${f.name} · ${formatBytes(f.size)} · thời lượng ${formatTime(currentVideoDuration)}`;
+    validateCueDuration();
+  }catch(e){
+    $('videoInfo').textContent=`${f.name} · ${formatBytes(f.size)}`;
+    setStatus('Đã nhận video nhưng chưa đọc được thời lượng. Vẫn có thể đóng gói.', 'warn');
+  }
+  refreshReadyState();
+}
+function getVideoDuration(file){
+  return new Promise((resolve,reject)=>{
+    const v=document.createElement('video'); const url=URL.createObjectURL(file);
+    v.preload='metadata'; v.onloadedmetadata=()=>{const d=v.duration;URL.revokeObjectURL(url);resolve(d)};
+    v.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Không đọc được metadata video'));}; v.src=url;
+  });
+}
+function validateCueDuration(showMessage=true){
+  if(!parsedQuestions || !Number.isFinite(currentVideoDuration)) return true;
+  const bad=parsedQuestions.filter(q=>q.time>currentVideoDuration+1);
+  if(bad.length){if(showMessage)setStatus('Có mốc câu hỏi vượt quá thời lượng video: '+bad.map(q=>`Câu ${q.number} @ ${q.time}s`).join(', '),'bad');return false;}
+  return true;
+}
+
+async function parseQuestionSelection(){
+  parsedQuestions=null; const box=$('questionPreview'); box.innerHTML='';
+  const f=$('questionFile').files[0];
+  if(!f){refreshReadyState();return;}
+  try{
+    const text=await readQuestionText(f);
+    parsedQuestions=parseQuestionText(text);
+    if(!parsedQuestions.length) throw new Error('Không tìm thấy câu hỏi theo định dạng Câu 1, A–D, Đáp án.');
+    parsedQuestions.forEach(q=>{
+      const d=document.createElement('div'); d.className='preview-item';
+      d.innerHTML=`<b>Câu ${q.number}</b> · mốc ${q.time}s (${formatTime(q.time)}) · đáp án ${q.answer}<br>${escapeHtml(q.question)}`;
+      box.appendChild(d);
+    });
+    validateCueDuration();
+    setStatus(`Đã đọc ${parsedQuestions.length} câu hỏi từ ${f.name}.`, 'good');
+  }catch(e){
+    parsedQuestions=null; setStatus('Lỗi đọc file câu hỏi: '+e.message,'bad');
+  }
+  refreshReadyState();
+}
+
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+// =========================
+// ĐỌC DOCX KHÔNG CẦN THƯ VIỆN NGOÀI
+// =========================
+async function readQuestionText(file){
+  const e=extOf(file.name);
+  if(e==='.txt' || e==='.md') return file.text();
+  if(e!=='.docx') throw new Error('Chỉ hỗ trợ .docx, .txt, .md');
+  const xmlBytes=await unzipEntry(file,'word/document.xml');
+  const xml=new TextDecoder('utf-8').decode(xmlBytes);
+  const doc=new DOMParser().parseFromString(xml,'application/xml');
+  if(doc.getElementsByTagName('parsererror').length) throw new Error('DOCX có XML không hợp lệ.');
+  const paras=[...doc.getElementsByTagName('w:p')];
+  const lines=paras.map(p=>{
+    let out='';
+    p.childNodes.forEach(()=>{});
+    const walker=doc.createTreeWalker(p,NodeFilter.SHOW_ELEMENT);
+    let n=walker.currentNode;
+    while(n){
+      if(n.nodeName==='w:t') out+=n.textContent||'';
+      else if(n.nodeName==='w:tab') out+='\t';
+      else if(n.nodeName==='w:br') out+='\n';
+      n=walker.nextNode();
+    }
+    return out.trim();
+  }).filter(Boolean);
+  return lines.join('\n');
+}
+
+async function unzipEntry(file,target){
+  const bytes=new Uint8Array(await file.arrayBuffer());
+  const dv=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength);
+  let eocd=-1;
+  for(let i=bytes.length-22;i>=Math.max(0,bytes.length-65557);i--){if(dv.getUint32(i,true)===0x06054b50){eocd=i;break;}}
+  if(eocd<0) throw new Error('Không tìm thấy cấu trúc ZIP trong DOCX.');
+  const cdOffset=dv.getUint32(eocd+16,true), total=dv.getUint16(eocd+10,true);
+  let p=cdOffset;
+  for(let k=0;k<total;k++){
+    if(dv.getUint32(p,true)!==0x02014b50) throw new Error('Central Directory DOCX bị lỗi.');
+    const method=dv.getUint16(p+10,true), compSize=dv.getUint32(p+20,true), nameLen=dv.getUint16(p+28,true), extraLen=dv.getUint16(p+30,true), commentLen=dv.getUint16(p+32,true), localOffset=dv.getUint32(p+42,true);
+    const name=new TextDecoder('utf-8').decode(bytes.slice(p+46,p+46+nameLen));
+    if(name===target){
+      if(dv.getUint32(localOffset,true)!==0x04034b50) throw new Error('Local header DOCX bị lỗi.');
+      const ln=dv.getUint16(localOffset+26,true), le=dv.getUint16(localOffset+28,true), dataStart=localOffset+30+ln+le;
+      const comp=bytes.slice(dataStart,dataStart+compSize);
+      if(method===0) return comp;
+      if(method===8){
+        if(typeof DecompressionStream==='undefined') throw new Error('Trình duyệt không hỗ trợ giải nén DOCX. Hãy dùng Chrome/Edge mới hoặc lưu câu hỏi thành .txt.');
+        const ds=new DecompressionStream('deflate-raw');
+        const stream=new Blob([comp]).stream().pipeThrough(ds);
+        return new Uint8Array(await new Response(stream).arrayBuffer());
+      }
+      throw new Error('DOCX dùng kiểu nén chưa hỗ trợ: '+method);
+    }
+    p+=46+nameLen+extraLen+commentLen;
+  }
+  throw new Error('Không tìm thấy word/document.xml trong DOCX.');
+}
+
+// =========================
+// PARSE FILE CÂU HỎI
+// =========================
+function parseQuestionText(text){
+  const raw=String(text||'').replace(/\r/g,'');
+  const times={};
+  const timeRe=/Tại\s+giây\s+(\d+)\s+(?:hiện|xuất\s+hiện)\s+câu\s+hỏi\s+(\d+)/giu;
+  let m; while((m=timeRe.exec(raw))) times[Number(m[2])]=Number(m[1]);
+  const startRe=/(?:^|\n)\s*\[?\s*Câu\s+(\d+)\s*(?=\n|$)/giu;
+  const starts=[]; while((m=startRe.exec(raw))) starts.push({num:Number(m[1]),idx:m.index,bodyStart:startRe.lastIndex});
+  const out=[];
+  for(let i=0;i<starts.length;i++){
+    const s=starts[i], end=i+1<starts.length?starts[i+1].idx:raw.length;
+    const block=raw.slice(s.bodyStart,end).trim();
+    const lines=block.split('\n').map(x=>x.trim()).filter(Boolean);
+    const opts={}; let answer=''; const qLines=[]; let seenOption=false;
+    for(const line of lines){
+      const om=line.match(/^([A-D])\s*[\.\)]\s*(.+)$/iu);
+      const am=line.match(/^Đáp\s*án\s*:\s*([A-D])/iu);
+      if(am){answer=am[1].toUpperCase();continue;}
+      if(om){seenOption=true;opts[om[1].toUpperCase()]=om[2].trim();continue;}
+      if(!seenOption && !/^Sau đây là/i.test(line)) qLines.push(line);
+    }
+    if(!times[s.num]) throw new Error(`Thiếu mốc thời gian cho Câu ${s.num}. Cần dòng “Tại giây ... hiện câu hỏi ${s.num}”.`);
+    if(!qLines.join(' ').trim()) throw new Error(`Câu ${s.num} chưa có nội dung.`);
+    if(['A','B','C','D'].some(k=>!opts[k])) throw new Error(`Câu ${s.num} chưa đủ 4 lựa chọn A, B, C, D.`);
+    if(!answer || !opts[answer]) throw new Error(`Câu ${s.num} chưa có “Đáp án: A/B/C/D”.`);
+    out.push({number:s.num,time:times[s.num],question:qLines.join(' '),options:opts,answer});
+  }
+  out.sort((a,b)=>a.time-b.time || a.number-b.number);
+  return out;
+}
+
+// =========================
+// TẠO VIDEO TƯƠNG TÁC HTML
+// =========================
+function buildInteractiveVideoHtml(title,questions){
+  const qjson=JSON.stringify(questions).replace(/</g,'\\u003c');
+  const safeTitle=escapeHtml(title);
+  return `<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${safeTitle}</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:"Segoe UI",Arial,sans-serif;background:#f1f5f9;color:#0f172a}.top{background:linear-gradient(120deg,#2563eb,#7c3aed);color:white;text-align:center;padding:24px 16px}.top h1{margin:0;font-size:clamp(24px,4vw,38px)}.wrap{max-width:1050px;margin:24px auto;padding:0 14px}.card{position:relative;background:white;border-radius:20px;padding:18px;box-shadow:0 12px 30px rgba(15,23,42,.12)}video{display:block;width:100%;max-height:68vh;background:#000;border-radius:14px}.meta{margin-top:14px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#475569}.pill{background:#eff6ff;color:#1d4ed8;border-radius:999px;padding:8px 12px;font-weight:700}.overlay{position:absolute;inset:18px;background:rgba(15,23,42,.72);display:none;align-items:center;justify-content:center;border-radius:14px;padding:18px}.overlay.show{display:flex}.qbox{background:white;border-radius:18px;padding:22px;width:min(720px,100%);box-shadow:0 18px 60px rgba(0,0,0,.3)}.qhead{color:#2563eb;font-weight:900;margin-bottom:9px}.qtext{font-size:21px;font-weight:800;line-height:1.45;margin-bottom:14px}.opt{display:block;width:100%;text-align:left;border:2px solid #dbeafe;background:#f8fbff;border-radius:12px;padding:13px 14px;margin:9px 0;font-size:17px;cursor:pointer}.opt:hover{background:#eff6ff;border-color:#93c5fd}.opt.good{background:#dcfce7;border-color:#22c55e}.opt.bad{background:#fee2e2;border-color:#ef4444}.msg{min-height:28px;font-weight:800;margin-top:12px}.msg.good{color:#15803d}.msg.bad{color:#b91c1c}.done{display:none;margin-top:18px;background:#ecfdf5;border:1px solid #a7f3d0;color:#166534;padding:16px;border-radius:14px;font-weight:800;text-align:center}
+</style></head><body>
+<header class="top"><h1>${safeTitle}</h1><div>VIDEO TƯƠNG TÁC</div></header>
+<main class="wrap"><section class="card">
+<video id="video" controls preload="metadata" src="video.mp4"></video>
+<div class="meta"><span class="pill" id="progress">0/${questions.length} câu đã hoàn thành</span><span>Trả lời đúng để tiếp tục video</span></div>
+<div id="overlay" class="overlay"><div class="qbox"><div id="qhead" class="qhead"></div><div id="qtext" class="qtext"></div><div id="options"></div><div id="msg" class="msg"></div></div></div>
+<div id="done" class="done">🎉 Em đã hoàn thành toàn bộ câu hỏi trong video.</div>
+</section></main>
+<script>
+const QUESTIONS=${qjson};
+const video=document.getElementById('video'),overlay=document.getElementById('overlay'),qhead=document.getElementById('qhead'),qtext=document.getElementById('qtext'),options=document.getElementById('options'),msg=document.getElementById('msg'),progress=document.getElementById('progress'),done=document.getElementById('done');
+let next=0,locked=false;
+function showQuestion(q){locked=true;video.pause();try{video.currentTime=q.time}catch(e){};qhead.textContent='Câu '+q.number+' / '+QUESTIONS.length+' · mốc '+q.time+' giây';qtext.textContent=q.question;options.innerHTML='';msg.textContent='';msg.className='msg';['A','B','C','D'].forEach(k=>{const b=document.createElement('button');b.className='opt';b.textContent=k+'. '+q.options[k];b.onclick=()=>answer(q,k,b);options.appendChild(b)});overlay.classList.add('show')}
+function answer(q,k,btn){if(!locked)return;if(k===q.answer){btn.classList.add('good');msg.textContent='Chính xác! Video sẽ tiếp tục.';msg.className='msg good';locked=false;next++;progress.textContent=next+'/'+QUESTIONS.length+' câu đã hoàn thành';setTimeout(()=>{overlay.classList.remove('show');if(next>=QUESTIONS.length)done.style.display='block';video.play().catch(()=>{})},650)}else{btn.classList.add('bad');msg.textContent='Chưa đúng. Em hãy chọn lại đáp án đúng để tiếp tục.';msg.className='msg bad';setTimeout(()=>btn.classList.remove('bad'),550)}}
+video.addEventListener('timeupdate',()=>{if(locked||next>=QUESTIONS.length)return;const q=QUESTIONS[next];if(video.currentTime>=q.time)showQuestion(q)});
+video.addEventListener('seeking',()=>{if(next<QUESTIONS.length&&!locked&&video.currentTime>QUESTIONS[next].time){video.currentTime=QUESTIONS[next].time}});
+video.addEventListener('play',()=>{if(locked)video.pause()});
+<\/script></body></html>`;
+}
+
+// =========================
+// HTML MODE: TÌM / GHÉP TÀI NGUYÊN CỤC BỘ
+// =========================
+function normalizePath(p){
+  try{return decodeURIComponent(String(p||'')).normalize('NFC').trim().replace(/\\/g,'/').replace(/^\.\//,'').replace(/^\/+/, '');}
+  catch(e){return String(p||'').trim().replace(/\\/g,'/').replace(/^\.\//,'').replace(/^\/+/, '');}
+}
+function isLocalRef(p){
+  const s=String(p||'').trim(); if(!s)return false;
+  return !/^(?:https?:|data:|blob:|javascript:|mailto:|tel:|#|\/\/)/i.test(s);
+}
+function extractLocalRefs(html){
+  const found=[]; let m;
+  const attr=/(?:src|href|poster)\s*=\s*["']([^"']+)["']/gi;
+  while((m=attr.exec(html))) if(isLocalRef(m[1])) found.push(normalizePath(m[1]));
+  const css=/url\(\s*["']?([^"')]+)["']?\s*\)/gi;
+  while((m=css.exec(html))) if(isLocalRef(m[1])) found.push(normalizePath(m[1]));
+  return [...new Set(found)].filter(x=>x && !/\.html?$/i.test(x));
+}
+function basename(p){return normalizePath(p).split(/[?#]/)[0].split('/').pop();}
+function mapHtmlAssets(html,files){
+  const refs=extractLocalRefs(html), uploads=[...files];
+  const mapping=[]; const missing=[]; const fileToPath=new Map(); let assetN=1;
+  function assetPathFor(f){
+    if(fileToPath.has(f))return fileToPath.get(f);
+    const ext=extOf(f.name)||''; const path='asset_'+String(assetN++).padStart(3,'0')+ext; fileToPath.set(f,path); return path;
+  }
+  if(refs.length===1 && uploads.length===1){
+    const f=uploads[0]; mapping.push({originalPath:refs[0],file:f,path:assetPathFor(f)});
+  }else{
+    refs.forEach(ref=>{
+      let f=uploads.find(x=>normalizePath(x.webkitRelativePath||x.name)===ref);
+      if(!f) f=uploads.find(x=>basename(x.name)===basename(ref));
+      if(f) mapping.push({originalPath:ref,file:f,path:assetPathFor(f)}); else missing.push(ref);
+    });
+  }
+  uploads.forEach(f=>{
+    if(!mapping.some(x=>x.file===f)) mapping.push({originalPath:normalizePath(f.name),file:f,path:assetPathFor(f)});
+  });
+  return {refs,mapping,missing};
+}
+
+// =========================
+// H5P WRAPPER THEO MẪU: htmlBase64 + assets + H5P.getPath()
+// =========================
+function utf8ToBase64(str){
+  const b=new TextEncoder().encode(str); let bin=''; const chunk=0x8000;
+  for(let i=0;i<b.length;i+=chunk) bin+=String.fromCharCode(...b.subarray(i,i+chunk));
+  return btoa(bin);
+}
+function runnerJs(){
+return `(function(){\n"use strict";\nfunction decodeUtf8Base64(b64){try{var bin=atob(b64||"");var bytes=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return new TextDecoder("utf-8").decode(bytes);}catch(e){return "<!doctype html><html><body><pre>"+String(e)+"</pre></body></html>";}}\nfunction normalizePath(p){try{return String(p||"").normalize("NFC").trim().replace(/\\\\/g,"/").replace(/^\\.\\//,"").replace(/^\\/+/ ,"");}catch(e){return String(p||"").trim().replace(/\\\\/g,"/").replace(/^\\.\\//,"").replace(/^\\/+/ ,"");}}\nfunction replaceRef(html,originalPath,url){var p=normalizePath(originalPath);var variants=[p];if(p.indexOf("./")!==0)variants.push("./"+p);variants.forEach(function(v){html=html.split('"'+v+'"').join('"'+url+'"');html=html.split("'"+v+"'").join("'"+url+"'");html=html.split("url("+v+")").join('url("'+url+'")');html=html.split('url("'+v+'")').join('url("'+url+'")');html=html.split("url('"+v+"')").join("url('"+url+"')");});return html;}\nH5P.${LIB_PROP}=function(params,contentId){H5P.EventDispatcher.call(this);this.params=params||{};this.contentId=contentId;};\nH5P.${LIB_PROP}.prototype=Object.create(H5P.EventDispatcher.prototype);H5P.${LIB_PROP}.prototype.constructor=H5P.${LIB_PROP};\nH5P.${LIB_PROP}.prototype.attach=function($container){var self=this;var html=decodeUtf8Base64(this.params.htmlBase64||"");var assets=this.params.assets||[];assets.forEach(function(asset){if(!asset||!asset.originalPath||!asset.file||!asset.file.path)return;var url=H5P.getPath(asset.file.path,self.contentId);html=replaceRef(html,asset.originalPath,url);});var iframe=document.createElement("iframe");iframe.className="lnc-media-file-frame";iframe.setAttribute("frameborder","0");iframe.setAttribute("scrolling","no");iframe.setAttribute("allow","autoplay; fullscreen; microphone; camera; clipboard-read; clipboard-write");iframe.setAttribute("allowfullscreen","");iframe.title=this.params.title||"Bài học tương tác";$container.addClass("h5p-lnc-media-file").get(0).appendChild(iframe);iframe.srcdoc=html;function fit(){try{var d=iframe.contentDocument||iframe.contentWindow.document;var h=Math.max(760,d.documentElement.scrollHeight,d.body?d.body.scrollHeight:0);iframe.style.height=Math.min(h+24,30000)+"px";}catch(e){}try{self.trigger("resize");}catch(e){}try{if(H5P.externalDispatcher)H5P.externalDispatcher.trigger("resize");}catch(e){}}iframe.addEventListener("load",function(){fit();setTimeout(fit,300);setTimeout(fit,1000);setTimeout(fit,2500);try{var ro=new ResizeObserver(fit);ro.observe(iframe.contentDocument.documentElement);}catch(e){}});setInterval(fit,1500);fit();};\n})();`;
+}
+function runnerCss(){return `.h5p-lnc-media-file{width:100%;max-width:100%;overflow:hidden}.lnc-media-file-frame{display:block;width:100%;max-width:100%;height:900px;min-height:760px;border:0;background:#fff}`;}
+function semanticsJson(){return [
+  {name:'title',type:'text',label:'Tiêu đề'},
+  {name:'htmlBase64',type:'text',label:'HTML Base64'},
+  {name:'assets',type:'list',label:'Tài nguyên',field:{name:'asset',type:'group',label:'Tài nguyên',fields:[{name:'originalPath',type:'text',label:'Đường dẫn gốc'},{name:'file',type:'file',label:'Tệp',optional:false}]}}
+];}
+function libraryJson(){return {title:'LNC HTML Media File',description:'Runs teacher HTML/video interactive lessons and resolves packaged media with H5P.getPath.',majorVersion:1,minorVersion:0,patchVersion:0,runnable:1,author:'Thầy Lê Nguyễn Cường',license:'MIT',machineName:LIB_MACHINE,preloadedJs:[{path:'runner.js'}],preloadedCss:[{path:'runner.css'}]};}
+function h5pJson(title){return {title,language:'vi',mainLibrary:LIB_MACHINE,embedTypes:['div'],license:'U',preloadedDependencies:[{machineName:LIB_MACHINE,majorVersion:1,minorVersion:0}]};}
+
+async function buildH5P(title,html,assetMappings){
+  const assets=[]; const packageFiles=[]; const added=new Set();
+  for(const m of assetMappings){
+    assets.push({originalPath:m.originalPath,file:{path:m.path,mime:mimeOf(m.file)}});
+    if(!added.has(m.path)){packageFiles.push({name:'content/'+m.path,data:new Uint8Array(await m.file.arrayBuffer())});added.add(m.path);}
+  }
+  const content={title,htmlBase64:utf8ToBase64(html),assets};
+  const textFiles={
+    'h5p.json':JSON.stringify(h5pJson(title),null,2),
+    'content/content.json':JSON.stringify(content),
+    [LIB_FOLDER+'/library.json']:JSON.stringify(libraryJson(),null,2),
+    [LIB_FOLDER+'/semantics.json']:JSON.stringify(semanticsJson(),null,2),
+    [LIB_FOLDER+'/runner.js']:runnerJs(),
+    [LIB_FOLDER+'/runner.css']:runnerCss()
+  };
+  Object.entries(textFiles).forEach(([name,text])=>packageFiles.push({name,data:new TextEncoder().encode(text)}));
+  return createZipBlob(packageFiles);
+}
+
+// =========================
+// ZIP WRITER (STORE) - KHÔNG CDN, KHÔNG THƯ VIỆN NGOÀI
+// =========================
+const CRC_TABLE=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);t[n]=c>>>0;}return t;})();
+function crc32(bytes){let c=0xFFFFFFFF;for(let i=0;i<bytes.length;i++)c=CRC_TABLE[(c^bytes[i])&0xFF]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
+function dosDateTime(d=new Date()){let year=Math.max(1980,d.getFullYear());const date=((year-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate();const time=(d.getHours()<<11)|(d.getMinutes()<<5)|(Math.floor(d.getSeconds()/2));return {date,time};}
+function u16(v){const a=new Uint8Array(2);new DataView(a.buffer).setUint16(0,v,true);return a;}function u32(v){const a=new Uint8Array(4);new DataView(a.buffer).setUint32(0,v>>>0,true);return a;}
+function concatParts(parts){let n=0;parts.forEach(p=>n+=p.length);const out=new Uint8Array(n);let o=0;parts.forEach(p=>{out.set(p,o);o+=p.length});return out;}
+function createZipBlob(files){
+  const locals=[],centrals=[];let offset=0;const dt=dosDateTime();
+  for(const f of files){
+    const nameBytes=new TextEncoder().encode(f.name.replace(/\\/g,'/')); const data=f.data instanceof Uint8Array?f.data:new Uint8Array(f.data); const crc=crc32(data); const size=data.length;
+    const local=concatParts([u32(0x04034b50),u16(20),u16(0x0800),u16(0),u16(dt.time),u16(dt.date),u32(crc),u32(size),u32(size),u16(nameBytes.length),u16(0),nameBytes]);
+    locals.push(local,data);
+    const central=concatParts([u32(0x02014b50),u16(20),u16(20),u16(0x0800),u16(0),u16(dt.time),u16(dt.date),u32(crc),u32(size),u32(size),u16(nameBytes.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(offset),nameBytes]);
+    centrals.push(central); offset+=local.length+size;
+  }
+  const centralOffset=offset; let centralSize=0;centrals.forEach(x=>centralSize+=x.length);
+  const eocd=concatParts([u32(0x06054b50),u16(0),u16(0),u16(files.length),u16(files.length),u32(centralSize),u32(centralOffset),u16(0)]);
+  return new Blob([...locals,...centrals,eocd],{type:'application/zip'});
+}
+
+// =========================
+// THỰC THI
+// =========================
+async function createPackage(){
+  createBtn.disabled=true; createBtn.textContent='ĐANG TẠO...';
+  try{
+    const title=$('lessonTitle').value.trim()||'BÀI HỌC TƯƠNG TÁC';
+    let html='', mappings=[];
+    if(currentMode==='html'){
+      const hf=$('htmlFile').files[0]; if(!hf) throw new Error('Chưa chọn file HTML.');
+      html=await hf.text();
+      const r=mapHtmlAssets(html,[...$('htmlAssets').files]);
+      if(r.missing.length) throw new Error('HTML còn thiếu tài nguyên cục bộ: '+r.missing.join(', '));
+      mappings=r.mapping;
+      setStatus(`Đang đóng gói HTML + ${new Set(mappings.map(x=>x.file)).size} tài nguyên...`,'warn');
+    }else{
+      const vf=$('videoFile').files[0], qf=$('questionFile').files[0];
+      if(!vf||!qf) throw new Error('Cần chọn đủ video MP4 và file câu hỏi.');
+      if(!parsedQuestions||!parsedQuestions.length) throw new Error('File câu hỏi chưa được phân tích hợp lệ.');
+      if(!validateCueDuration()) throw new Error('Có mốc câu hỏi vượt quá thời lượng video.');
+      html=buildInteractiveVideoHtml(title,parsedQuestions);
+      mappings=[{originalPath:'video.mp4',file:vf,path:'asset_001.mp4'}];
+      setStatus(`Đang tạo video tương tác ${parsedQuestions.length} câu hỏi và đóng gói ${formatBytes(vf.size)} video...`,'warn');
+    }
+    await new Promise(r=>setTimeout(r,60));
+    const blob=await buildH5P(title,html,mappings);
+    const filename=safeFilename(title);
+    const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000);
+    setStatus(`ĐÃ TẠO THÀNH CÔNG\n${filename}\nDung lượng: ${formatBytes(blob.size)}\nFile đã tự động tải về máy.`, 'good');
+  }catch(e){
+    console.error(e); setStatus('KHÔNG TẠO ĐƯỢC H5P\n'+(e&&e.message?e.message:String(e)),'bad');
+  }finally{
+    createBtn.textContent='TẠO FILE H5P'; refreshReadyState(false);
+  }
+}
+
+refreshReadyState();
+</script>
+</body>
+</html>
